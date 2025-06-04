@@ -1,25 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { CiudadanosModule } from './ciudadanos/ciudadanos.module';
-import mysql from 'mysql2/promise';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [AuthModule, CiudadanosModule],
+  imports: [AuthModule, CiudadanosModule, DatabaseModule],
   controllers: [],
-  providers: [
-    {
-      provide: 'MYSQL_CONNECTION',
-      useFactory: () => {
-        return mysql.createPool({
-          host: process.env.DB_HOST || 'localhost',
-          user: process.env.DB_USER || 'root',
-          password: process.env.DB_PASSWORD || 'admin',
-          database: process.env.DB_NAME || 'mi_basededatos',
-          waitForConnections: true,
-          connectionLimit: 10,
-        });
-      },
-    },
-  ],
+  providers: [],
 })
 export class AppModule {}

@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { IRepository } from './repository.interface';
+import { Pool, RowDataPacket } from 'mysql2/promise';
 
 @Injectable()
 export abstract class CustomRepository<T extends object>
@@ -7,15 +8,18 @@ export abstract class CustomRepository<T extends object>
 {
   protected readonly tableName: string;
 
-  protected constructor(tableName: string) {
+  protected constructor(
+    tableName: string,
+    @Inject('MYSQL_CONNECTION') private readonly db: Pool,
+  ) {
     this.tableName = tableName;
   }
 
-  findAll(): Promise<T[] | null> {
+  async findAll(): Promise<T[]> {
     const sql = `SELECT *
                  FROM ${this.tableName}`;
-    console.log(`Executing SQL: ${sql}`);
-    throw new Error('Method not implemented.');
+    const [rows] = await this.db.query<RowDataPacket[]>(sql);
+    return rows as T[];
   }
 
   findById(id: string | number): Promise<T | null> {
