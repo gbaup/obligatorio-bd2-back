@@ -1,5 +1,5 @@
 interface IRepository<T> {
-  findAll(): Promise<T[]>;
+  findAll(): Promise<T[] | null>;
 
   findById(id: string | number): Promise<T | null>;
 

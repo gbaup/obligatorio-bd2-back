@@ -5,7 +5,16 @@ import { IRepository } from './repository.interface';
 export abstract class CustomRepository<T extends object>
   implements IRepository<T>
 {
-  findAll(): Promise<T[]> {
+  protected readonly tableName: string;
+
+  protected constructor(tableName: string) {
+    this.tableName = tableName;
+  }
+
+  findAll(): Promise<T[] | null> {
+    const sql = `SELECT *
+                 FROM ${this.tableName}`;
+    console.log(`Executing SQL: ${sql}`);
     throw new Error('Method not implemented.');
   }
 

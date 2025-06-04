@@ -1,7 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { CiudadanosService } from './ciudadanos.service';
 
 @Controller('ciudadanos')
 export class CiudadanosController {
   constructor(private readonly ciudadanosService: CiudadanosService) {}
+
+  @Get()
+  async getAllCiudadanos() {
+    return this.ciudadanosService.getAllCiudadanos();
+  }
 }
