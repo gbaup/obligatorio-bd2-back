@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CustomRepository } from '../repositories/custom.repository';
-import { Ciudadano } from '../common/domain/ciudadanos';
+import { CustomRepository } from '../../repositories/custom.repository';
+import { Ciudadano } from '../../common/domain/ciudadanos';
 import { Pool } from 'mysql2/promise';
 
 @Injectable()
