@@ -12,13 +12,11 @@ interface Candidato extends Ciudadano {
   ci_ciudadano: number;
 }
 
-// interface Votante extends Ciudadano {}
-
-interface MiembroDeMesa extends Ciudadano {
-  //ci
+interface MiembroMesa extends Ciudadano {
+  ci_ciudadano: number;
   rol: RolMiembroDeMesa;
   organismo: string;
-  //mesa_asignada
+  mesa_asignada: string;
 }
 
 // Probablemente no exista esto
@@ -26,4 +24,4 @@ interface AgenteDePolicia extends Ciudadano {
   comisaria: string;
 }
 
-export type { Ciudadano, Candidato, MiembroDeMesa, AgenteDePolicia };
+export type { Ciudadano, Candidato, MiembroMesa, AgenteDePolicia };
