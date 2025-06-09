@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IRepository } from './repository.interface';
-import { Pool, RowDataPacket } from 'mysql2/promise';
+import { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 
 @Injectable()
 export abstract class CustomRepository<T extends object>
@@ -22,19 +22,36 @@ export abstract class CustomRepository<T extends object>
     return rows as T[];
   }
 
-  findById(id: string | number): Promise<T | null> {
-    throw new Error('Method not implemented.');
+  async findById(id: string | number): Promise<T | null> {
+    const sql = `SELECT *
+                 FROM ${this.tableName}
+                 WHERE id = ?`;
+    return this.db
+      .query<RowDataPacket[]>(sql, [id])
+      .then(([rows]) => (rows.length > 0 ? (rows[0] as T) : null));
   }
 
-  create(data: Partial<T>): Promise<T> {
-    throw new Error('Method not implemented.');
+  async create(data: Partial<T>): Promise<T> {
+    const sql = `INSERT INTO ${this.tableName}
+                 SET ?`;
+    const [result] = await this.db.query<ResultSetHeader>(sql, [data]);
+    const id = result.insertId;
+    return { ...data, id } as T;
   }
 
-  update(id: string | number, data: Partial<T>): Promise<T> {
-    throw new Error('Method not implemented.');
+  async update(id: string | number, data: Partial<T>): Promise<T | null> {
+    const sql = `UPDATE ${this.tableName}
+                 SET ?
+                 WHERE id = ?`;
+    return this.db
+      .query<ResultSetHeader>(sql, [data, id])
+      .then(() => this.findById(id));
   }
 
-  delete(id: string | number): Promise<void> {
-    throw new Error('Method not implemented.');
+  async delete(id: string | number): Promise<void> {
+    const sql = `DELETE
+                 FROM ${this.tableName}
+                 WHERE id = ?`;
+    return this.db.query<ResultSetHeader>(sql, [id]).then(() => {});
   }
 }
