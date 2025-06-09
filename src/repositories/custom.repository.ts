@@ -34,9 +34,8 @@ export abstract class CustomRepository<T extends object>
   async create(data: Partial<T>): Promise<T> {
     const sql = `INSERT INTO ${this.tableName}
                  SET ?`;
-    const [result] = await this.db.query<ResultSetHeader>(sql, [data]);
-    const id = result.insertId;
-    return { ...data, id } as T;
+    await this.db.query<ResultSetHeader>(sql, [data]);
+    return { ...data } as T;
   }
 
   async update(id: string | number, data: Partial<T>): Promise<T | null> {
