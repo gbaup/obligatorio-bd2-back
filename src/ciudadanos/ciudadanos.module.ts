@@ -13,5 +13,6 @@ import { MiembrosMesaRepository } from './repositories/miembros-mesa.repository'
     CandidatosRepository,
     MiembrosMesaRepository,
   ],
+  exports: [CiudadanosRepository],
 })
 export class CiudadanosModule {}
