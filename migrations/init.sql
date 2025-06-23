@@ -1,7 +1,7 @@
 CREATE TABLE Ciudadano
 (
-    CI               int PRIMARY KEY,
-    CC               VARCHAR(9),
+    ci               int PRIMARY KEY,
+    cc               VARCHAR(9),
     fecha_nacimiento DATE,
     nombres          VARCHAR(100),
     apellidos        VARCHAR(100),
@@ -23,8 +23,8 @@ CREATE TABLE Zona
 
 CREATE TABLE Candidato
 (
-    CI int,
-    FOREIGN KEY (CI) REFERENCES Ciudadano (CI)
+    ci_ciudadano int,
+    FOREIGN KEY (ci_ciudadano) REFERENCES Ciudadano (ci)
 );
 
 CREATE TABLE Comisaria
@@ -75,11 +75,11 @@ CREATE TABLE Establecimiento
 
 CREATE TABLE MiembroMesa
 (
-    ci_miembro    int,
+    ci_ciudadano  int,
     rol           ENUM ('presidente', 'secretario', 'vocal'),
     organismo     VARCHAR(100),
     mesa_asignada int,
-    FOREIGN KEY (ci_miembro) REFERENCES Ciudadano (CI),
+    FOREIGN KEY (ci_ciudadano) REFERENCES Ciudadano (ci),
     FOREIGN KEY (mesa_asignada) REFERENCES Mesa (id)
 );
 
@@ -90,8 +90,8 @@ CREATE TABLE Partido
     dir_sede       VARCHAR(100),
     presidente     int,
     vicepresidente int,
-    FOREIGN KEY (presidente) REFERENCES Candidato (CI),
-    FOREIGN KEY (vicepresidente) REFERENCES Candidato (CI)
+    FOREIGN KEY (presidente) REFERENCES Candidato (ci_ciudadano),
+    FOREIGN KEY (vicepresidente) REFERENCES Candidato (ci_ciudadano)
 );
 
 CREATE TABLE Organo
@@ -126,7 +126,7 @@ CREATE TABLE Lista
     id_organo           int,
     nombre_departamento VARCHAR(19),
     FOREIGN KEY (id_papeleta) REFERENCES Papeleta (id),
-    FOREIGN KEY (ci_candidato) REFERENCES Candidato (CI),
+    FOREIGN KEY (ci_candidato) REFERENCES Candidato (ci_ciudadano),
     FOREIGN KEY (id_partido) REFERENCES Partido (id),
     FOREIGN KEY (id_organo) REFERENCES Organo (id),
     FOREIGN KEY (nombre_departamento) REFERENCES Departamento (nombre)
@@ -147,8 +147,8 @@ CREATE TABLE Formula
     vicepresidente int,
     lema           VARCHAR(100),
     FOREIGN KEY (id) REFERENCES Papeleta (id),
-    FOREIGN KEY (presidente) REFERENCES Candidato (CI),
-    FOREIGN KEY (vicepresidente) REFERENCES Candidato (CI)
+    FOREIGN KEY (presidente) REFERENCES Candidato (ci_ciudadano),
+    FOREIGN KEY (vicepresidente) REFERENCES Candidato (ci_ciudadano)
 );
 
 CREATE TABLE Voto
