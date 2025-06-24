@@ -14,4 +14,19 @@ export class PapeletasController {
   async getCircuitosPorLocalidad(@Query('localidad') localidad: string) {
     return this.papeletasService.getCircuitosPorLocalidad(localidad);
   }
+
+  @Get('lista/:id')
+  async getLista(@Query('id') id: number) {
+    return this.papeletasService.getListaPorPapeleta(id);
+  }
+
+  @Get('plebiscito/:id')
+  async getPlebiscito(@Query('id') id: number) {
+    return this.papeletasService.getPlebiscitoPorPapeleta(id);
+  }
+
+  @Get('formula/:id')
+  async getFormula(@Query('id') id: number) {
+    return this.papeletasService.getFormulaPorPapeleta(id);
+  }
 }
