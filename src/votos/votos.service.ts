@@ -13,14 +13,23 @@ export class VotosService {
     const { id_papeletas, id_circuito_votado, fecha_hora, es_observado, estado } = body;
     const fechaMySQL = this.toMySQLDateTime(fecha_hora);
     const results: ResultSetHeader[] = [];
-    for (const id_papeleta of id_papeletas) {
-      const [result] = await this.db.query<ResultSetHeader>(
+    if (estado === "blanco" && (!id_papeletas || id_papeletas.length === 0)) {
+        const [result] = await this.db.query<ResultSetHeader>(
         `INSERT INTO Voto (fecha_hora, es_observado, estado, id_papeleta, id_circuito)
-         VALUES (?, ?, ?, ?, ?)`,
-        [fechaMySQL, es_observado, estado, id_papeleta, id_circuito_votado]
-      );
-      results.push(result);
+        VALUES (?, ?, ?, ?, ?)`,
+        [fechaMySQL, es_observado, estado, null, id_circuito_votado]
+        );
+        results.push(result);
+    } else {
+        for (const id_papeleta of id_papeletas) {
+        const [result] = await this.db.query<ResultSetHeader>(
+            `INSERT INTO Voto (fecha_hora, es_observado, estado, id_papeleta, id_circuito)
+            VALUES (?, ?, ?, ?, ?)`,
+            [fechaMySQL, es_observado, estado, id_papeleta, id_circuito_votado]
+        );
+        results.push(result);
+        }
     }
     return { estado };
-  }
+    }
 }
