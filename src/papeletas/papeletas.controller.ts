@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PapeletasService } from './papeletas.service';
 
 @Controller('papeletas')
@@ -16,17 +16,17 @@ export class PapeletasController {
   }
 
   @Get('lista/:id')
-  async getLista(@Query('id') id: number) {
-    return this.papeletasService.getListaPorPapeleta(id);
+  async getLista(@Param('id') id: string) {
+    return this.papeletasService.getListaPorPapeleta(Number(id));
   }
 
   @Get('plebiscito/:id')
-  async getPlebiscito(@Query('id') id: number) {
-    return this.papeletasService.getPlebiscitoPorPapeleta(id);
+  async getPlebiscito(@Param('id') id: string) {
+    return this.papeletasService.getPlebiscitoPorPapeleta(Number(id));
   }
 
   @Get('formula/:id')
-  async getFormula(@Query('id') id: number) {
-    return this.papeletasService.getFormulaPorPapeleta(id);
+  async getFormula(@Param('id') id: string) {
+    return this.papeletasService.getFormulaPorPapeleta(Number(id));
   }
 }
