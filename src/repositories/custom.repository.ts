@@ -10,7 +10,7 @@ export abstract class CustomRepository<T extends object>
 
   protected constructor(
     tableName: string,
-    @Inject('MYSQL_CONNECTION') private readonly db: Pool,
+    @Inject('MYSQL_CONNECTION') protected readonly db: Pool,
   ) {
     this.tableName = tableName;
   }
