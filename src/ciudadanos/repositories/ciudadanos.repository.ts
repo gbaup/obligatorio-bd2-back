@@ -15,4 +15,10 @@ export class CiudadanosRepository extends CustomRepository<Ciudadano> {
     const [rows] = await this.db.query<RowDataPacket[]>(sql, [ci]);
     return Array.isArray(rows) && rows.length > 0 ? (rows[0] as Ciudadano) : null;
   }
+
+  async findCircuitoAsignado(serie: string, num: number) {
+    const sql = `SELECT * FROM Circuito WHERE serie_cc = ? AND inicio_num_cc <= ? AND fin_num_cc >= ? LIMIT 1`;
+    const [rows] = await (this as any).db.query(sql, [serie, num, num]);
+    return rows[0] || null;
+  }
 }

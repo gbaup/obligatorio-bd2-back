@@ -5,18 +5,32 @@ import { CiudadanosRepository } from '../ciudadanos/repositories/ciudadanos.repo
 export class AuthService {
   constructor(private readonly ciudadanosRepository: CiudadanosRepository) {}
 
-  async signIn(username: string): Promise<any> {
+  async signIn(username: string, cc: string): Promise<any> {
     const ci = Number(username);
     if (isNaN(ci)) {
       throw new UnauthorizedException('CI inválida');
     }
+
+    const ccPattern = /^[A-Z]{3}\d{6}$/i;
+    if (!ccPattern.test(cc.trim())) {
+      throw new UnauthorizedException('Formato de CC inválido');
+    }
+
     const ciudadano = await this.ciudadanosRepository.findById(ci);
     if (!ciudadano) {
       throw new UnauthorizedException('Usuario no encontrado');
     }
+    if (ciudadano.cc.trim().toUpperCase() !== cc.trim().toUpperCase()) {
+      throw new UnauthorizedException('CI o CC inválida');
+    }
+    const serie = ciudadano.cc.substring(0, 3);
+    const num = Number(ciudadano.cc.substring(3));
+    const circuito = await this.ciudadanosRepository.findCircuitoAsignado(serie, num);
     return {
       ...ciudadano,
       rol: 'CIUDADANO',
+      circuitoAsignado: circuito,
     };
   }
+
 }
