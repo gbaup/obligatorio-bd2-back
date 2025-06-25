@@ -5,9 +5,13 @@ import { DatabaseModule } from './database/database.module';
 import { PapeletasModule } from './papeletas/papeletas.module';
 import { VotosModule } from './votos/votos.module';
 import { EleccionesModule } from './elecciones/elecciones.module';
+import { PartidosModule } from './partidos/partidos.module';
+import { OrganosModule } from './organos/organos.module';
+import { DepartamentosModule } from './departamentos/departamentos.module';
 
 @Module({
-  imports: [AuthModule, CiudadanosModule, DatabaseModule, PapeletasModule, VotosModule, EleccionesModule],
+  imports: [AuthModule, CiudadanosModule, DatabaseModule, PapeletasModule, VotosModule, EleccionesModule,
+    PartidosModule, OrganosModule, DepartamentosModule],
   controllers: [],
   providers: [],
 })

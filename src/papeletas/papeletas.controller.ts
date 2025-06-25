@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, Body } from '@nestjs/common';
 import { PapeletasService } from './papeletas.service';
 
 @Controller('papeletas')
@@ -28,5 +28,10 @@ export class PapeletasController {
   @Get('formula/:id')
   async getFormula(@Param('id') id: string) {
     return this.papeletasService.getFormulaPorPapeleta(Number(id));
+  }
+
+  @Post()
+  async crearPapeleta(@Body() body: any) {
+    return this.papeletasService.crearPapeleta(body);
   }
 }

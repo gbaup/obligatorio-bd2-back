@@ -29,4 +29,8 @@ export class CiudadanosService {
   async createMiembroMesa(miembroMesa: MiembroMesaDto) {
     return this.miembrosMesaRepository.create(miembroMesa);
   }
+
+  async getAllCandidatos() {
+    return this.candidatosRepository.findAllWithNombres();
+  }
 }

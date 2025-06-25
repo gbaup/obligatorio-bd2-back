@@ -9,4 +9,13 @@ export class CandidatosRepository extends CustomRepository<Candidato> {
     const tableName = 'Candidato';
     super(tableName, db);
   }
+
+  async findAllWithNombres() {
+    const [rows] = await this.db.query(
+      `SELECT Candidato.ci_ciudadano, Ciudadano.nombres, Ciudadano.apellidos
+       FROM Candidato
+       JOIN Ciudadano ON Candidato.ci_ciudadano = Ciudadano.ci`
+    );
+    return rows;
+  }
 }

@@ -27,4 +27,9 @@ export class CiudadanosController {
   async createMiembroMesa(@Body() miembroMesa: MiembroMesaDto) {
     return this.ciudadanosService.createMiembroMesa(miembroMesa);
   }
+
+  @Get('candidatos')
+  async getCandidatos() {
+    return this.ciudadanosService.getAllCandidatos();
+  }
 }
