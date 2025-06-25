@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Pool, ResultSetHeader } from 'mysql2/promise';
+import { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 
 @Injectable()
 export class VotosService {
@@ -12,6 +12,16 @@ export class VotosService {
   async emitirVoto(body: any) {
     const { id_papeletas, id_circuito_votado, fecha_hora, es_observado, estado } = body;
     const fechaMySQL = this.toMySQLDateTime(fecha_hora);
+
+    // Verificar si hay elección en curso (fecha = hoy)
+    const [elecciones] = await this.db.query<RowDataPacket[]>(
+    'SELECT id FROM Eleccion WHERE fecha = CURDATE()'
+    );
+    if (!elecciones || elecciones.length === 0) {
+      throw new Error('No hay elección en curso hoy');
+    }
+    const eleccionEnCurso = elecciones[0];
+
     const results: ResultSetHeader[] = [];
     if (estado === "blanco" && (!id_papeletas || id_papeletas.length === 0)) {
         const [result] = await this.db.query<ResultSetHeader>(
@@ -31,5 +41,5 @@ export class VotosService {
         }
     }
     return { estado };
-    }
+  }
 }
