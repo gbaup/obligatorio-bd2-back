@@ -110,7 +110,7 @@ CREATE TABLE Eleccion
 
 CREATE TABLE Papeleta
 (
-    id          int PRIMARY KEY,
+    id          int PRIMARY KEY AUTO_INCREMENT,
     color       VARCHAR(12),
     id_eleccion int,
     tipo        ENUM ('lista', 'plebiscito', 'formula'),

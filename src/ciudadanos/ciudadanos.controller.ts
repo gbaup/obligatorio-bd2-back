@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { CiudadanosService } from './ciudadanos.service';
 import { CiudadanoDto } from './dto/ciudadano.dto';
 import { CandidatoDto } from './dto/candidato.dto';
@@ -23,8 +31,44 @@ export class CiudadanosController {
     return this.ciudadanosService.createCandidato(ci);
   }
 
+  @Get('miembros-mesa')
+  async getMiembrosMesa() {
+    return this.ciudadanosService.getMiembrosMesa();
+  }
+
+  @Delete('miembros-mesa/:ci')
+  async destituirMiembroMesa(@Param('ci') ci: string) {
+    return this.ciudadanosService.destituirMiembroMesa(Number(ci));
+  }
+
   @Post('miembro-mesa')
   async createMiembroMesa(@Body() miembroMesa: MiembroMesaDto) {
     return this.ciudadanosService.createMiembroMesa(miembroMesa);
+  }
+
+  @Get('candidatos')
+  async getCandidatos() {
+    return this.ciudadanosService.getAllCandidatos();
+  }
+
+  @Get(':ci')
+  async getCiudadanoPorCi(@Param('ci') ci: string) {
+    return this.ciudadanosService.getCiudadanoPorCi(Number(ci));
+  }
+
+  @Patch(':ci/habilitar')
+  async habilitarCiudadano(
+    @Param('ci') ci: string,
+    @Body() body: { ha_votado: boolean },
+  ) {
+    return this.ciudadanosService.habilitarCiudadano(
+      Number(ci),
+      body.ha_votado,
+    );
+  }
+
+  @Patch('habilitar-todos')
+  async habilitarTodos(@Body() body: { ha_votado: boolean }) {
+    return this.ciudadanosService.habilitarTodos(body.ha_votado);
   }
 }
