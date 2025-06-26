@@ -24,17 +24,22 @@ export class PapeletasService {
   async getListaPorPapeleta(idPapeleta: number) {
     const [rows] = await this.db.query(
       `SELECT
-        Ciu.nombres,
-        Ciu.apellidos,
-        P.nombre AS partido,
-        O.tipo AS organo,
-        L.nombre_departamento AS departamento
-        FROM Lista L
-        JOIN Partido P ON L.id_partido = P.id
-        JOIN Organo O ON L.id_organo = O.id
-        JOIN Candidato C ON L.ci_candidato = C.ci_ciudadano
-        JOIN Ciudadano Ciu ON C.ci_ciudadano = Ciu.CI
-        WHERE L.id_papeleta = ?`,
+      L.numero,
+      L.ci_candidato,
+      L.id_partido,
+      L.id_organo,
+      L.nombre_departamento,
+      Ciu.nombres,
+      Ciu.apellidos,
+      P.nombre AS partido,
+      O.tipo AS organo,
+      L.nombre_departamento AS departamento
+      FROM Lista L
+      JOIN Partido P ON L.id_partido = P.id
+      JOIN Organo O ON L.id_organo = O.id
+      JOIN Candidato C ON L.ci_candidato = C.ci_ciudadano
+      JOIN Ciudadano Ciu ON C.ci_ciudadano = Ciu.CI
+      WHERE L.id_papeleta = ?`,
       [idPapeleta],
     );
     return rows;
