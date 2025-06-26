@@ -57,7 +57,6 @@ export class PapeletasService {
   }
 
   async crearPapeleta(body: any) {
-    // Validar y convertir tipos para Papeleta
     const color = body.color;
     const tipo = body.tipo;
     const id_eleccion = Number(body.id_eleccion);
@@ -127,5 +126,74 @@ export class PapeletasService {
     }
 
     return { id: idPapeleta };
+  }
+
+  async editarPapeleta(id: number, body: any) {
+    if (body.color) {
+      await this.db.query('UPDATE Papeleta SET color = ? WHERE id = ?', [
+        body.color,
+        id,
+      ]);
+    }
+
+    const [rows] = await this.db.query(
+      'SELECT tipo FROM Papeleta WHERE id = ?',
+      [id],
+    );
+    const papeleta =
+      Array.isArray(rows) && rows.length > 0
+        ? (rows[0] as { tipo: string })
+        : null;
+    if (!papeleta) throw new Error('Papeleta no encontrada');
+
+    if (papeleta.tipo === 'lista') {
+      await this.db.query(
+        `UPDATE Lista SET numero = ?, ci_candidato = ?, id_partido = ?, id_organo = ?, nombre_departamento = ?
+       WHERE id_papeleta = ?`,
+        [
+          body.numero,
+          body.ci_candidato,
+          body.id_partido,
+          body.id_organo,
+          body.nombre_departamento,
+          id,
+        ],
+      );
+    } else if (papeleta.tipo === 'plebiscito') {
+      await this.db.query(
+        `UPDATE Plebiscito SET valor = ?, descripcion = ? WHERE id_plebiscito = ?`,
+        [body.valor, body.descripcion, id],
+      );
+    } else if (papeleta.tipo === 'formula') {
+      await this.db.query(
+        `UPDATE Formula SET presidente = ?, vicepresidente = ?, lema = ? WHERE id = ?`,
+        [body.presidente, body.vicepresidente, body.lema, id],
+      );
+    }
+    return { ok: true };
+  }
+
+  async borrarPapeleta(id: number) {
+    const [rows] = await this.db.query(
+      'SELECT tipo FROM Papeleta WHERE id = ?',
+      [id],
+    );
+    const papeleta =
+      Array.isArray(rows) && rows.length > 0
+        ? (rows[0] as { tipo: string })
+        : null;
+    if (!papeleta) throw new Error('Papeleta no encontrada');
+
+    if (papeleta.tipo === 'lista') {
+      await this.db.query('DELETE FROM Lista WHERE id_papeleta = ?', [id]);
+    } else if (papeleta.tipo === 'plebiscito') {
+      await this.db.query('DELETE FROM Plebiscito WHERE id_plebiscito = ?', [
+        id,
+      ]);
+    } else if (papeleta.tipo === 'formula') {
+      await this.db.query('DELETE FROM Formula WHERE id = ?', [id]);
+    }
+    await this.db.query('DELETE FROM Papeleta WHERE id = ?', [id]);
+    return { ok: true };
   }
 }
