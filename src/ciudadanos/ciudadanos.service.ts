@@ -53,4 +53,18 @@ export class CiudadanosService {
     await this.db.query('UPDATE Ciudadano SET ha_votado = ?', [ha_votado]);
     return { ok: true };
   }
+
+  async destituirMiembroMesa(ci: number) {
+    await this.db.query(`DELETE FROM MiembroMesa WHERE ci_ciudadano = ?`, [ci]);
+    return { ok: true };
+  }
+
+  async getMiembrosMesa() {
+    const [rows] = await this.db.query(
+      `SELECT mm.ci_ciudadano, mm.rol, mm.organismo, mm.mesa_asignada, c.nombres, c.apellidos
+     FROM MiembroMesa mm
+     JOIN Ciudadano c ON mm.ci_ciudadano = c.ci`,
+    );
+    return rows;
+  }
 }

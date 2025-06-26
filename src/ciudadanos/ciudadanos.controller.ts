@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Param, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { CiudadanosService } from './ciudadanos.service';
 import { CiudadanoDto } from './dto/ciudadano.dto';
 import { CandidatoDto } from './dto/candidato.dto';
@@ -21,6 +29,16 @@ export class CiudadanosController {
   @Post('candidato')
   async createCandidato(@Body() ci: CandidatoDto) {
     return this.ciudadanosService.createCandidato(ci);
+  }
+
+  @Get('miembros-mesa')
+  async getMiembrosMesa() {
+    return this.ciudadanosService.getMiembrosMesa();
+  }
+
+  @Delete('miembros-mesa/:ci')
+  async destituirMiembroMesa(@Param('ci') ci: string) {
+    return this.ciudadanosService.destituirMiembroMesa(Number(ci));
   }
 
   @Post('miembro-mesa')
