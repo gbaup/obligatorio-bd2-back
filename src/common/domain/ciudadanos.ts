@@ -6,6 +6,9 @@ interface Ciudadano {
   fecha_nacimiento: Date;
   nombres: string;
   apellidos: string;
+  ha_votado: boolean;
+  es_admin: boolean;
+  password: string;
 }
 
 interface Candidato extends Ciudadano {

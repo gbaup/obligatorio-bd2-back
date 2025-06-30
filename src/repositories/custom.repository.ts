@@ -15,11 +15,30 @@ export abstract class CustomRepository<T extends object>
     this.tableName = tableName;
   }
 
-  async findAll(): Promise<T[]> {
-    const sql = `SELECT *
-                 FROM ${this.tableName}`;
-    const [rows] = await this.db.query<RowDataPacket[]>(sql);
+  async find(params?: { where?: Record<string, any> }): Promise<T[]> {
+    let sql = `SELECT *
+               FROM ${this.tableName}`;
+    const queryParams: any[] = [];
+
+    if (params?.where) {
+      const whereConditions = Object.entries(params.where)
+        .map(([key, _]) => `${key} = ?`)
+        .join(' AND ');
+
+      if (whereConditions) {
+        sql += ` WHERE ${whereConditions}`;
+        queryParams.push(...Object.values(params.where));
+      }
+    }
+
+    const [rows] = await this.db.query<RowDataPacket[]>(sql, queryParams);
     return rows as T[];
+  }
+
+  async findOne(params?: { where?: Record<string, any> }): Promise<T | null> {
+    console.log(params);
+    const rows = await this.find({ where: params?.where });
+    return rows[0] || null;
   }
 
   async findById(id: string | number): Promise<T | null> {

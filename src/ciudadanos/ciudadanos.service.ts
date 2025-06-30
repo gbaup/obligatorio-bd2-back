@@ -6,6 +6,9 @@ import { CandidatoDto } from './dto/candidato.dto';
 import { MiembroMesaDto } from './dto/miembro-mesa.dto';
 import { MiembrosMesaRepository } from './repositories/miembros-mesa.repository';
 import { Pool } from 'mysql2/promise';
+import { Ciudadano } from '../common/domain/ciudadanos';
+import { Circuito } from '../common/domain/circuito';
+import { CircuitosService } from '../circuitos/circuitos.service';
 
 @Injectable()
 export class CiudadanosService {
@@ -13,6 +16,7 @@ export class CiudadanosService {
     private readonly ciudadanosRepository: CiudadanosRepository,
     private readonly candidatosRepository: CandidatosRepository,
     private readonly miembrosMesaRepository: MiembrosMesaRepository,
+    private readonly circuitosService: CircuitosService,
     @Inject('MYSQL_CONNECTION') private readonly db: Pool,
   ) {}
 
@@ -21,7 +25,7 @@ export class CiudadanosService {
   }
 
   async getAll() {
-    return this.ciudadanosRepository.findAll();
+    return this.ciudadanosRepository.find();
   }
 
   async createCandidato(ci_ciudadano: CandidatoDto) {
@@ -35,6 +39,7 @@ export class CiudadanosService {
   async getAllCandidatos() {
     return this.candidatosRepository.findAllWithNombres();
   }
+
   async getCiudadanoPorCi(ci: number) {
     const ciudadano = await this.ciudadanosRepository.findById(ci);
     if (!ciudadano) throw new NotFoundException('Ciudadano no encontrado');
@@ -55,16 +60,25 @@ export class CiudadanosService {
   }
 
   async destituirMiembroMesa(ci: number) {
-    await this.db.query(`DELETE FROM MiembroMesa WHERE ci_ciudadano = ?`, [ci]);
+    await this.db.query(
+      `DELETE
+       FROM MiembroMesa
+       WHERE ci_ciudadano = ?`,
+      [ci],
+    );
     return { ok: true };
   }
 
   async getMiembrosMesa() {
     const [rows] = await this.db.query(
       `SELECT mm.ci_ciudadano, mm.rol, mm.organismo, mm.mesa_asignada, c.nombres, c.apellidos
-     FROM MiembroMesa mm
-     JOIN Ciudadano c ON mm.ci_ciudadano = c.ci`,
+       FROM MiembroMesa mm
+                JOIN Ciudadano c ON mm.ci_ciudadano = c.ci`,
     );
     return rows;
+  }
+
+  async findCircuitoAsignado(ciudadano: Ciudadano): Promise<Circuito> {
+    return await this.circuitosService.getCircuitoSegunCredencial(ciudadano.cc);
   }
 }
