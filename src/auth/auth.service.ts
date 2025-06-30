@@ -1,49 +1,37 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CiudadanosRepository } from '../ciudadanos/repositories/ciudadanos.repository';
+import * as bcrypt from 'bcrypt';
+import { SignInDto } from './interfaces/signin.dto';
+import { CiudadanoDto } from '../ciudadanos/dto/ciudadano.dto';
+import { CiudadanosService } from '../ciudadanos/ciudadanos.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly ciudadanosRepository: CiudadanosRepository) {}
+  constructor(private readonly ciudadanosService: CiudadanosService) {}
 
-  async signIn(username: string, cc: string): Promise<any> {
-    const ci = Number(username);
-    if (isNaN(ci)) {
-      throw new UnauthorizedException('CI inválida');
-    }
+  async signIn(body: SignInDto) {
+    const { ci, password } = body;
 
-    // admin hardcodeado para no cambiar la bd
-    if (ci === 55797403) {
-      if (cc !== 'admin') {
-        throw new UnauthorizedException('CC inválida para admin');
-      }
-      return {
-        ci,
-        nombres: 'Administrador',
-        apellidos: '',
-        rol: 'ADMIN',
-      };
+    const ciudadano = await this.ciudadanosService.getCiudadanoPorCi(ci);
+
+    if (!ciudadano || !ciudadano.es_admin) {
+      throw new UnauthorizedException(
+        'Ciudadano no registrado como administrador',
+      );
     }
 
-    const ccPattern = /^[A-Z]{3}\d{6}$/i;
-    if (!ccPattern.test(cc.trim())) {
-      throw new UnauthorizedException('Formato de CC inválido');
+    const esValida = await bcrypt.compare(password, ciudadano.contrasena);
+
+    if (!esValida) {
+      throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    const ciudadano = await this.ciudadanosRepository.findById(ci);
-    if (!ciudadano) {
-      throw new UnauthorizedException('Usuario no encontrado');
-    }
-    if (ciudadano.cc.trim().toUpperCase() !== cc.trim().toUpperCase()) {
-      throw new UnauthorizedException('CI o CC inválida');
-    }
-    const serie = ciudadano.cc.substring(0, 3);
-    const num = Number(ciudadano.cc.substring(3));
-    const circuito = await this.ciudadanosRepository.findCircuitoAsignado(serie, num);
-    return {
-      ...ciudadano,
-      rol: 'CIUDADANO',
-      circuitoAsignado: circuito,
-    };
+    const { contrasena, ...ciudadanoSinContrasena } = ciudadano;
+
+    return ciudadanoSinContrasena;
   }
 
+  async signUp(ciudadano: CiudadanoDto) {
+    ciudadano.contrasena = await bcrypt.hash(ciudadano.contrasena, 10);
+    return this.ciudadanosService.create(ciudadano);
+  }
 }

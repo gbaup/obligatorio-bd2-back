@@ -9,6 +9,7 @@ import { PartidosModule } from './partidos/partidos.module';
 import { OrganosModule } from './organos/organos.module';
 import { DepartamentosModule } from './departamentos/departamentos.module';
 import { MesasModule } from './mesas/mesas.module';
+import { CircuitosModule } from './circuitos/circuitos.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MesasModule } from './mesas/mesas.module';
     OrganosModule,
     DepartamentosModule,
     MesasModule,
+    CircuitosModule,
   ],
   controllers: [],
   providers: [],

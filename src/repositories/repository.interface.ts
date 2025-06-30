@@ -1,5 +1,7 @@
 interface IRepository<T> {
-  findAll(): Promise<T[] | null>;
+  find(params?: { where?: Record<string, any> }): Promise<T[]>;
+
+  findOne(params?: { where?: Record<string, any> }): Promise<T | null>;
 
   findById(id: string | number): Promise<T | null>;
 
