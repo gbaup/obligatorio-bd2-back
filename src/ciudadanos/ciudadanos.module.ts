@@ -17,6 +17,6 @@ import { CircuitosRepository } from '../circuitos/circuitos.repository';
     CandidatosRepository,
     MiembrosMesaRepository,
   ],
-  exports: [CiudadanosRepository],
+  exports: [CiudadanosService],
 })
 export class CiudadanosModule {}

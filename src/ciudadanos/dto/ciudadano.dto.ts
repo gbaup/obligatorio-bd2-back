@@ -2,17 +2,20 @@ import { IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CiudadanoDto {
   @IsString()
-  readonly nombres: string;
+  nombres: string;
 
   @IsString()
-  readonly apellidos: string;
+  apellidos: string;
 
   @IsNumber()
-  readonly ci: number;
+  ci: number;
 
   @IsString()
-  readonly cc: string;
+  cc: string;
+
+  @IsString()
+  contrasena: string;
 
   @IsDateString()
-  readonly fecha_nacimiento: Date;
+  fecha_nacimiento: Date;
 }

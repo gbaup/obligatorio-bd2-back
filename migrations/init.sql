@@ -7,10 +7,10 @@ CREATE TABLE Ciudadano
     apellidos        VARCHAR(100),
     ha_votado        BOOLEAN,
     es_admin         BOOLEAN default FALSE,
-    password         VARCHAR(100)
+    contrasena       VARCHAR(100)
 );
 
-INSERT INTO Ciudadano (ci, cc, fecha_nacimiento, nombres, apellidos, ha_votado, es_admin, password)
+INSERT INTO Ciudadano (ci, cc, fecha_nacimiento, nombres, apellidos, ha_votado, es_admin, contrasena)
 VALUES (12345678, 'ABC123456', '2000-01-01', 'admin', 'admin', FALSE, TRUE,
         '$2b$10$1pZIW0cKjx/6vTa0103mBeLYCa0sbJ8ZGFDkwNoAn3PGtdn8YwieO');
 

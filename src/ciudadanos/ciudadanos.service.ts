@@ -21,7 +21,16 @@ export class CiudadanosService {
   ) {}
 
   async create(dataCiudadano: CiudadanoDto) {
-    return this.ciudadanosRepository.create(dataCiudadano);
+    const ciudadanoEncontrado = await this.getCiudadanoPorCi(dataCiudadano.ci);
+
+    if (ciudadanoEncontrado) {
+      throw new NotFoundException('Ciudadano ya registrado');
+    }
+
+    const { contrasena, ...ciudadanoSinContrasena } =
+      await this.ciudadanosRepository.create(dataCiudadano);
+
+    return ciudadanoSinContrasena;
   }
 
   async getAll() {
@@ -41,9 +50,9 @@ export class CiudadanosService {
   }
 
   async getCiudadanoPorCi(ci: number) {
-    const ciudadano = await this.ciudadanosRepository.findById(ci);
-    if (!ciudadano) throw new NotFoundException('Ciudadano no encontrado');
-    return ciudadano;
+    return await this.ciudadanosRepository.findOne({
+      where: { ci },
+    });
   }
 
   async habilitarCiudadano(ci: number, ha_votado: boolean) {

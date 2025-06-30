@@ -1,28 +1,37 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CiudadanosRepository } from '../ciudadanos/repositories/ciudadanos.repository';
 import * as bcrypt from 'bcrypt';
+import { SignInDto } from './interfaces/signin.dto';
+import { CiudadanoDto } from '../ciudadanos/dto/ciudadano.dto';
+import { CiudadanosService } from '../ciudadanos/ciudadanos.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly ciudadanosRepository: CiudadanosRepository) {}
+  constructor(private readonly ciudadanosService: CiudadanosService) {}
 
-  async signIn(ci: number, password: string) {
-    const ciudadano = await this.ciudadanosRepository.findOne({
-      where: { ci: ci },
-    });
+  async signIn(body: SignInDto) {
+    const { ci, password } = body;
 
-    if (!ciudadano || !ciudadano.password) {
+    const ciudadano = await this.ciudadanosService.getCiudadanoPorCi(ci);
+
+    if (!ciudadano || !ciudadano.es_admin) {
       throw new UnauthorizedException(
         'Ciudadano no registrado como administrador',
       );
     }
 
-    const esValida = await bcrypt.compare(password, ciudadano.password);
+    const esValida = await bcrypt.compare(password, ciudadano.contrasena);
 
     if (!esValida) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    return ciudadano;
+    const { contrasena, ...ciudadanoSinContrasena } = ciudadano;
+
+    return ciudadanoSinContrasena;
+  }
+
+  async signUp(ciudadano: CiudadanoDto) {
+    ciudadano.contrasena = await bcrypt.hash(ciudadano.contrasena, 10);
+    return this.ciudadanosService.create(ciudadano);
   }
 }

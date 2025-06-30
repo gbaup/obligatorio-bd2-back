@@ -8,7 +8,7 @@ interface Ciudadano {
   apellidos: string;
   ha_votado: boolean;
   es_admin: boolean;
-  password: string;
+  contrasena: string;
 }
 
 interface Candidato extends Ciudadano {
