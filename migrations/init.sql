@@ -64,8 +64,9 @@ CREATE TABLE Circuito
 
 CREATE TABLE Mesa
 (
-    id          int PRIMARY KEY,
+    id          int PRIMARY KEY AUTO_INCREMENT,
     id_circuito int,
+    abierto BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_circuito) REFERENCES Circuito (id)
 );
 

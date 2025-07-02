@@ -5,6 +5,10 @@ import { CircuitosRepository } from './circuitos.repository';
 export class CircuitosService {
   constructor(private readonly circuitosRepository: CircuitosRepository) {}
 
+  async getAll() {
+    return this.circuitosRepository.find();
+  }
+
   async getCircuitoSegunCredencial(cc: string) {
     const serie = cc.slice(0, 3);
     const num = cc.slice(3);
