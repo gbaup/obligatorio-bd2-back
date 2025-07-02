@@ -51,7 +51,7 @@ CREATE TABLE AgentePolicia
 
 CREATE TABLE Circuito
 (
-    id            int PRIMARY KEY,
+    id            int PRIMARY KEY AUTO_INCREMENT,
     localidad     VARCHAR(50),
     direccion     VARCHAR(100),
     es_accesible  BOOLEAN,
