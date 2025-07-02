@@ -51,7 +51,7 @@ CREATE TABLE AgentePolicia
 
 CREATE TABLE Circuito
 (
-    id            int PRIMARY KEY,
+    id            int PRIMARY KEY AUTO_INCREMENT,
     localidad     VARCHAR(50),
     direccion     VARCHAR(100),
     es_accesible  BOOLEAN,
@@ -64,8 +64,9 @@ CREATE TABLE Circuito
 
 CREATE TABLE Mesa
 (
-    id          int PRIMARY KEY,
+    id          int PRIMARY KEY AUTO_INCREMENT,
     id_circuito int,
+    abierto BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_circuito) REFERENCES Circuito (id)
 );
 
