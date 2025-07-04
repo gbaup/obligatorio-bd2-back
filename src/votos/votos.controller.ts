@@ -12,6 +12,12 @@ export class VotosController {
   }
 
   @Get()
+  async obtenerVotosPorCircuito(@Query('circuito', ParseIntPipe) id_circuito: number,
+  ) {
+    return this.votosService.obtenerVotodsPorCircuito(id_circuito);
+  }
+
+  @Get('observados')
   async obtenerVotosObservadosPorCircuito(@Query('circuito', ParseIntPipe) id_circuito: number,
   ) {
     return this.votosService.obtenerVotosObservados(id_circuito);

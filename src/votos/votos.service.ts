@@ -49,10 +49,19 @@ export class VotosService {
   }
 
   async obtenerVotosObservados(id_circuito: number) {
+    //Actualmente devuelve un array de Votos observados. Si te interesa solo la cantidad hay que cambiar el return
     return this.votosRepository.find({
       where: {
         id_circuito,
         es_observado: true,
+      },
+    });
+  }
+
+  async obtenerVotodsPorCircuito(id_circuito: number) {
+    return this.votosRepository.find({
+      where: {
+        id_circuito,
       },
     });
   }
