@@ -5,4 +5,6 @@ export interface Voto {
   fecha_hora: Date;
   es_observado: boolean;
   estado: EstadoVoto;
+  id_papeleta?: string;
+  id_circuito: string;
 }

@@ -1,9 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { VotosRepository } from './votos.repository';
 
 @Injectable()
 export class VotosService {
-  constructor(@Inject('MYSQL_CONNECTION') private readonly db: Pool) {}
+  constructor(
+    @Inject('MYSQL_CONNECTION') private readonly db: Pool,
+    private readonly votosRepository: VotosRepository,
+  ) {
+  }
 
   private toMySQLDateTime(isoString: string) {
     return isoString.replace('T', ' ').substring(0, 19);
@@ -15,7 +20,7 @@ export class VotosService {
 
     // Verificar si hay elección en curso (fecha = hoy)
     const [elecciones] = await this.db.query<RowDataPacket[]>(
-    'SELECT id FROM Eleccion WHERE fecha = CURDATE()'
+      'SELECT id FROM Eleccion WHERE fecha = CURDATE()',
     );
     if (!elecciones || elecciones.length === 0) {
       throw new Error('No hay elección en curso hoy');
@@ -23,23 +28,32 @@ export class VotosService {
     const eleccionEnCurso = elecciones[0];
 
     const results: ResultSetHeader[] = [];
-    if (estado === "blanco" && (!id_papeletas || id_papeletas.length === 0)) {
-        const [result] = await this.db.query<ResultSetHeader>(
+    if (estado === 'blanco' && (!id_papeletas || id_papeletas.length === 0)) {
+      const [result] = await this.db.query<ResultSetHeader>(
         `INSERT INTO Voto (fecha_hora, es_observado, estado, id_papeleta, id_circuito)
         VALUES (?, ?, ?, ?, ?)`,
-        [fechaMySQL, es_observado, estado, null, id_circuito_votado]
-        );
-        results.push(result);
+        [fechaMySQL, es_observado, estado, null, id_circuito_votado],
+      );
+      results.push(result);
     } else {
-        for (const id_papeleta of id_papeletas) {
+      for (const id_papeleta of id_papeletas) {
         const [result] = await this.db.query<ResultSetHeader>(
-            `INSERT INTO Voto (fecha_hora, es_observado, estado, id_papeleta, id_circuito)
+          `INSERT INTO Voto (fecha_hora, es_observado, estado, id_papeleta, id_circuito)
             VALUES (?, ?, ?, ?, ?)`,
-            [fechaMySQL, es_observado, estado, id_papeleta, id_circuito_votado]
+          [fechaMySQL, es_observado, estado, id_papeleta, id_circuito_votado],
         );
         results.push(result);
-        }
+      }
     }
     return { estado };
+  }
+
+  async obtenerVotosObservados(id_circuito: number) {
+    return this.votosRepository.find({
+      where: {
+        id_circuito,
+        es_observado: true,
+      },
+    });
   }
 }

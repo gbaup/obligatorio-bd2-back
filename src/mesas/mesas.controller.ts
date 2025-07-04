@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Body, Patch } from '@nestjs/common';
 import { MesasService } from './mesas.service';
 
 @Controller('mesas')
 export class MesasController {
-  constructor(private readonly mesasService: MesasService) {}
+  constructor(private readonly mesasService: MesasService) {
+  }
 
   @Get()
   async getAll() {
@@ -18,5 +19,10 @@ export class MesasController {
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return this.mesasService.delete(Number(id));
+  }
+
+  @Patch(':id/abrir')
+  async abrirMesa(@Param('id') id: string) {
+    return this.mesasService.abrirMesa(Number(id));
   }
 }
