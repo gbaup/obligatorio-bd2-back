@@ -25,4 +25,9 @@ export class MesasController {
   async abrirMesa(@Param('id') id: string) {
     return this.mesasService.abrirMesa(Number(id));
   }
+
+  @Patch(':id/cerrar')
+  async cerrarMesa(@Param('id') id: string) {
+    return this.mesasService.cerrarMesa(Number(id));
+  }
 }

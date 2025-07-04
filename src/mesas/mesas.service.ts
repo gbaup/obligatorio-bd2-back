@@ -33,4 +33,8 @@ export class MesasService {
   async abrirMesa(id: number) {
     return await this.mesasRepository.update(id, { abierto: true });
   }
+
+  async cerrarMesa(id: number) {
+    return await this.mesasRepository.update(id, { abierto: false });
+  }
 }
