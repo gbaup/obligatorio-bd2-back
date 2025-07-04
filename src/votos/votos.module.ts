@@ -6,6 +6,7 @@ import { VotosRepository } from './votos.repository';
 @Module({
   controllers: [VotosController],
   providers: [VotosService, VotosRepository],
+  exports: [VotosService],
 })
 export class VotosModule {
 }

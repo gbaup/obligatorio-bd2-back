@@ -11,7 +11,7 @@ export class VotosController {
     return this.votosService.emitirVoto(body);
   }
 
-  @Get()
+  @Get('por-circuito')
   async obtenerVotosPorCircuito(@Query('circuito', ParseIntPipe) id_circuito: number,
   ) {
     return this.votosService.obtenerVotodsPorCircuito(id_circuito);
@@ -21,5 +21,11 @@ export class VotosController {
   async obtenerVotosObservadosPorCircuito(@Query('circuito', ParseIntPipe) id_circuito: number,
   ) {
     return this.votosService.obtenerVotosObservados(id_circuito);
+  }
+
+  @Get('por-partido')
+  async obtenerVotosPorPartido(@Query('partido', ParseIntPipe) id_partido: number,
+  ) {
+    return this.votosService.obtenerVotosPorPartido(id_partido);
   }
 }

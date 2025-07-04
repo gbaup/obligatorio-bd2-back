@@ -65,4 +65,12 @@ export class VotosService {
       },
     });
   }
+
+  async obtenerVotosPorPartido(id_partido: number) {
+    return this.votosRepository.find({
+      where: {
+        // id_partido, falta ver la logica de esto
+      },
+    });
+  }
 }
