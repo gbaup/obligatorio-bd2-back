@@ -11,8 +11,7 @@ import { CircuitosService } from './circuitos.service';
 
 @Controller('circuitos')
 export class CircuitosController {
-  constructor(private readonly circuitosService: CircuitosService) {
-  }
+  constructor(private readonly circuitosService: CircuitosService) {}
 
   @Get()
   async getAll() {
@@ -37,5 +36,10 @@ export class CircuitosController {
   @Get(':id/resultados')
   async obtenerResultados(@Param('id') id: string) {
     return this.circuitosService.obtenerResultados(Number(id));
+  }
+
+  @Get('por-cc/:cc')
+  async getPorCC(@Param('cc') cc: string) {
+    return this.circuitosService.getCircuitoSegunCredencial(cc);
   }
 }

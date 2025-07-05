@@ -87,7 +87,7 @@ export class CiudadanosService {
     return rows;
   }
 
-  async findCircuitoAsignado(ciudadano: Ciudadano): Promise<Circuito> {
+  async findCircuitoAsignado(ciudadano: Ciudadano): Promise<Circuito | null> {
     return await this.circuitosService.getCircuitoSegunCredencial(ciudadano.cc);
   }
 }

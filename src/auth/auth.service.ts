@@ -13,10 +13,8 @@ export class AuthService {
 
     const ciudadano = await this.ciudadanosService.getCiudadanoPorCi(ci);
 
-    if (!ciudadano || !ciudadano.es_admin) {
-      throw new UnauthorizedException(
-        'Ciudadano no registrado como administrador',
-      );
+    if (!ciudadano) {
+      throw new UnauthorizedException('Ciudadano no registrado');
     }
 
     const esValida = await bcrypt.compare(password, ciudadano.contrasena);

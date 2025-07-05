@@ -7,20 +7,32 @@ export class VotosService {
   constructor(
     @Inject('MYSQL_CONNECTION') private readonly db: Pool,
     private readonly votosRepository: VotosRepository,
-  ) {
-  }
+  ) {}
 
   private toMySQLDateTime(isoString: string) {
     return isoString.replace('T', ' ').substring(0, 19);
   }
 
   async emitirVoto(body: any) {
-    const { id_papeletas, id_circuito_votado, fecha_hora, es_observado, estado } = body;
+    const {
+      id_papeletas,
+      id_circuito_votado,
+      fecha_hora,
+      es_observado,
+      estado,
+    } = body;
     const fechaMySQL = this.toMySQLDateTime(fecha_hora);
 
-    // Verificar si hay elección en curso (fecha = hoy)
+    const now = new Date();
+    const uruguayOffset = -3 * 60;
+    const local = new Date(
+      now.getTime() + (uruguayOffset - now.getTimezoneOffset()) * 60000,
+    );
+    const fechaUy = local.toISOString().slice(0, 10);
+
     const [elecciones] = await this.db.query<RowDataPacket[]>(
-      'SELECT id FROM Eleccion WHERE fecha = CURDATE()',
+      'SELECT id FROM Eleccion WHERE fecha = ?',
+      [fechaUy],
     );
     if (!elecciones || elecciones.length === 0) {
       throw new Error('No hay elección en curso hoy');
