@@ -1,13 +1,17 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Pool, ResultSetHeader } from 'mysql2/promise';
+import { MesasRepository } from './mesas.repository';
 
 @Injectable()
 export class MesasService {
-  constructor(@Inject('MYSQL_CONNECTION') private readonly db: Pool) {}
+  constructor(
+    @Inject('MYSQL_CONNECTION') private readonly db: Pool,
+    private readonly mesasRepository: MesasRepository,
+  ) {
+  }
 
   async findAll() {
-    const [rows] = await this.db.query('SELECT * FROM Mesa');
-    return rows;
+    return await this.mesasRepository.find();
   }
 
   async create(id_circuito: number) {
@@ -24,5 +28,13 @@ export class MesasService {
     ]);
     await this.db.query('DELETE FROM Mesa WHERE id = ?', [id]);
     return { ok: true };
+  }
+
+  async abrirMesa(id: number) {
+    return await this.mesasRepository.update(id, { abierto: true });
+  }
+
+  async cerrarMesa(id: number) {
+    return await this.mesasRepository.update(id, { abierto: false });
   }
 }
