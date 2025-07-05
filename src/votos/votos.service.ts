@@ -95,4 +95,73 @@ export class VotosService {
       },
     });
   }
+
+  async resultadosPorDepartamento(departamento: string, id_eleccion: number) {
+    const [totalRows] = await this.db.query(
+      `SELECT COUNT(*) as total
+     FROM Voto v
+     JOIN Papeleta p ON v.id_papeleta = p.id
+     JOIN Lista l ON l.id_papeleta = p.id
+     WHERE l.nombre_departamento = ? AND p.id_eleccion = ? AND p.tipo = 'lista' AND v.estado = 'valido'`,
+      [departamento, id_eleccion],
+    );
+    const total = totalRows[0]?.total || 1;
+
+    const [rows] = await this.db.query(
+      `SELECT
+       pa.id as id_partido,
+       pa.nombre as nombre_partido,
+       COUNT(*) as votos,
+       ROUND(COUNT(*) / ? * 100, 2) as porcentaje
+     FROM Voto v
+     JOIN Papeleta p ON v.id_papeleta = p.id
+     JOIN Lista l ON l.id_papeleta = p.id
+     JOIN Partido pa ON l.id_partido = pa.id
+     WHERE l.nombre_departamento = ? AND p.id_eleccion = ? AND p.tipo = 'lista' AND v.estado = 'valido'
+     GROUP BY pa.id, pa.nombre
+     ORDER BY votos DESC`,
+      [total, departamento, id_eleccion],
+    );
+    return {
+      total_votos_validos: total,
+      resultados: rows,
+    };
+  }
+
+  async cantidadVotosObservados() {
+    const [rows] = await this.db.query(
+      `SELECT COUNT(*) as cantidad FROM Voto WHERE es_observado = true`,
+    );
+    return rows[0];
+  }
+
+  async participacionPorCircuito() {
+    const [rows] = await this.db.query(
+      `SELECT
+      c.id as id_circuito,
+      c.localidad as nombre_circuito,
+      c.serie_cc,
+      c.inicio_num_cc,
+      c.fin_num_cc,
+      (c.fin_num_cc - c.inicio_num_cc + 1) as padron,
+      COUNT(DISTINCT v.id) as votos_emitidos,
+      ROUND(COUNT(DISTINCT v.id) / GREATEST((c.fin_num_cc - c.inicio_num_cc + 1), 1) * 100, 2) as porcentaje
+    FROM Circuito c
+    LEFT JOIN Voto v ON v.id_circuito = c.id AND v.estado = 'valido'
+    GROUP BY c.id, c.localidad, c.serie_cc, c.inicio_num_cc, c.fin_num_cc`,
+    );
+    return rows;
+  }
+
+  async distribucionVotosAccesibilidad() {
+    const [rows] = await this.db.query(
+      `SELECT
+      c.es_accesible,
+      COUNT(v.id) as votos
+    FROM Circuito c
+    LEFT JOIN Voto v ON v.id_circuito = c.id AND v.estado = 'valido'
+    GROUP BY c.es_accesible`,
+    );
+    return rows;
+  }
 }

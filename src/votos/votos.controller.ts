@@ -44,10 +44,36 @@ export class VotosController {
     return this.votosService.obtenerVotosObservados(id_circuito);
   }
 
+  @Get('observados-total')
+  async cantidadVotosObservados() {
+    return this.votosService.cantidadVotosObservados();
+  }
+
+  @Get('participacion-circuito')
+  async participacionPorCircuito() {
+    return this.votosService.participacionPorCircuito();
+  }
+
+  @Get('votos-accesibilidad')
+  async distribucionVotosAccesibilidad() {
+    return this.votosService.distribucionVotosAccesibilidad();
+  }
+
   @Get('por-partido')
   async obtenerVotosPorPartido(
     @Query('partido', ParseIntPipe) id_partido: number,
   ) {
     return this.votosService.obtenerVotosPorPartido(id_partido);
+  }
+
+  @Get('resultados-departamento')
+  async resultadosPorDepartamento(
+    @Query('departamento') departamento: string,
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.votosService.resultadosPorDepartamento(
+      departamento,
+      id_eleccion,
+    );
   }
 }

@@ -6,6 +6,8 @@ import {
   Delete,
   Param,
   Body,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CircuitosService } from './circuitos.service';
 
@@ -34,8 +36,33 @@ export class CircuitosController {
   }
 
   @Get(':id/resultados')
-  async obtenerResultados(@Param('id') id: string) {
-    return this.circuitosService.obtenerResultados(Number(id));
+  async obtenerResultados(
+    @Param('id') id: string,
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.circuitosService.obtenerResultados(Number(id), id_eleccion);
+  }
+
+  @Get(':id/resultados-partido')
+  async obtenerResultadosPorPartido(
+    @Param('id') id: string,
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.circuitosService.obtenerResultadosPorPartido(
+      Number(id),
+      id_eleccion,
+    );
+  }
+
+  @Get(':id/resultados-candidato')
+  async obtenerResultadosPorCandidato(
+    @Param('id') id: string,
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.circuitosService.obtenerResultadosPorCandidato(
+      Number(id),
+      id_eleccion,
+    );
   }
 
   @Get('por-cc/:cc')
