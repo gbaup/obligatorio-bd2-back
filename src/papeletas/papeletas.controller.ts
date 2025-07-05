@@ -19,6 +19,11 @@ export class PapeletasController {
     return this.papeletasService.getPapeletasValidas(idEleccion);
   }
 
+  @Get(':id')
+  async getPapeletaPorId(@Param('id') id: string) {
+    return this.papeletasService.getPapeletaPorId(Number(id));
+  }
+
   @Get('/circuitos-por-localidad')
   async getCircuitosPorLocalidad(@Query('localidad') localidad: string) {
     return this.papeletasService.getCircuitosPorLocalidad(localidad);

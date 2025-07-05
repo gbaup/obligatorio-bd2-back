@@ -13,6 +13,14 @@ export class PapeletasService {
     return rows;
   }
 
+  async getPapeletaPorId(id: number) {
+    const [rows] = await this.db.query(
+      'SELECT id, color, tipo FROM Papeleta WHERE id = ?',
+      [id],
+    );
+    return rows[0] || null;
+  }
+
   async getCircuitosPorLocalidad(localidad: string) {
     const [rows] = await this.db.query(
       `SELECT id, direccion, es_accesible, localidad FROM Circuito WHERE localidad LIKE ?`,
