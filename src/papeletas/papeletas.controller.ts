@@ -19,8 +19,11 @@ export class PapeletasController {
     return this.papeletasService.getPapeletasValidas(idEleccion);
   }
 
-  @Get('/circuitos-por-localidad')
+  @Get('circuitos-por-localidad')
   async getCircuitosPorLocalidad(@Query('localidad') localidad: string) {
+    if (!localidad || localidad.trim().length < 2) {
+      throw new Error('Localidad inválida');
+    }
     return this.papeletasService.getCircuitosPorLocalidad(localidad);
   }
 
@@ -42,6 +45,15 @@ export class PapeletasController {
   @Post()
   async crearPapeleta(@Body() body: any) {
     return this.papeletasService.crearPapeleta(body);
+  }
+
+  @Get(':id')
+  async getPapeletaPorId(@Param('id') id: string) {
+    const numId = Number(id);
+    if (!id || isNaN(numId) || !Number.isFinite(numId)) {
+      throw new Error('ID de papeleta inválido');
+    }
+    return this.papeletasService.getPapeletaPorId(numId);
   }
 
   @Patch(':id')

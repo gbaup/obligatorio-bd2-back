@@ -7,8 +7,7 @@ export class CircuitosService {
   constructor(
     private readonly circuitosRepository: CircuitosRepository,
     private readonly votosService: VotosService,
-  ) {
-  }
+  ) {}
 
   async getAll() {
     return this.circuitosRepository.find();
@@ -27,21 +26,7 @@ export class CircuitosService {
   }
 
   async getCircuitoSegunCredencial(cc: string) {
-    const serie = cc.slice(0, 3);
-    const num = cc.slice(3);
-
-    const circuito = await this.circuitosRepository.findOne({
-      where: {
-        serie_cc: serie,
-        inicio_num_cc: parseInt(num),
-      },
-    });
-
-    if (!circuito) {
-      throw new Error('Circuito no encontrado');
-    }
-
-    return circuito;
+    return this.circuitosRepository.findByCredencial(cc);
   }
 
   async obtenerResultados(id_circuito: number) {
@@ -56,6 +41,5 @@ export class CircuitosService {
 
     // Aca tenes TODOS los votos del circuito. Faltaría agregar la lógica de que queres que devuelva este endpoint, si la suma por partidos o que
     // Estoy viendo que la tabla Voto no tiene relación con Lista. Te lo dejo en bandeja pa q lo liquides
-
   }
 }

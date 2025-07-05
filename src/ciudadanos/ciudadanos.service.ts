@@ -5,7 +5,7 @@ import { CandidatosRepository } from './repositories/candidatos.repository';
 import { CandidatoDto } from './dto/candidato.dto';
 import { MiembroMesaDto } from './dto/miembro-mesa.dto';
 import { MiembrosMesaRepository } from './repositories/miembros-mesa.repository';
-import { Pool } from 'mysql2/promise';
+import { Pool, RowDataPacket } from 'mysql2/promise';
 import { Ciudadano } from '../common/domain/ciudadanos';
 import { Circuito } from '../common/domain/circuito';
 import { CircuitosService } from '../circuitos/circuitos.service';
@@ -43,6 +43,14 @@ export class CiudadanosService {
 
   async createMiembroMesa(miembroMesa: MiembroMesaDto) {
     return this.miembrosMesaRepository.create(miembroMesa);
+  }
+
+  async esMiembroMesa(ci: number): Promise<boolean> {
+    const [rows] = await this.db.query<RowDataPacket[]>(
+      'SELECT 1 FROM MiembroMesa WHERE ci_ciudadano = ? LIMIT 1',
+      [ci],
+    );
+    return (rows as RowDataPacket[]).length > 0;
   }
 
   async getAllCandidatos() {
@@ -87,7 +95,7 @@ export class CiudadanosService {
     return rows;
   }
 
-  async findCircuitoAsignado(ciudadano: Ciudadano): Promise<Circuito> {
+  async findCircuitoAsignado(ciudadano: Ciudadano): Promise<Circuito | null> {
     return await this.circuitosService.getCircuitoSegunCredencial(ciudadano.cc);
   }
 }
