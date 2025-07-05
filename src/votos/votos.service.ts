@@ -60,6 +60,16 @@ export class VotosService {
     return { estado };
   }
 
+  async aprobarVoto(id: number) {
+    await this.votosRepository.update(id, { es_observado: false });
+    return { ok: true };
+  }
+
+  async eliminarVoto(id: number) {
+    await this.votosRepository.delete(id);
+    return { ok: true };
+  }
+
   async obtenerVotosObservados(id_circuito: number) {
     //Actualmente devuelve un array de Votos observados. Si te interesa solo la cantidad hay que cambiar el return
     return this.votosRepository.find({
