@@ -29,17 +29,27 @@ export class CircuitosService {
     return this.circuitosRepository.findByCredencial(cc);
   }
 
-  async obtenerResultados(id_circuito: number) {
-    const circuito = await this.circuitosRepository.findById(id_circuito);
+  async obtenerResultados(id_circuito: number, id_eleccion: number) {
+    return this.circuitosRepository.obtenerResultadosCircuito(
+      id_circuito,
+      id_eleccion,
+    );
+  }
 
-    if (!circuito) {
-      throw new Error('Circuito no encontrado');
-    }
+  async obtenerResultadosPorPartido(id_circuito: number, id_eleccion: number) {
+    return this.circuitosRepository.obtenerResultadosPorPartido(
+      id_circuito,
+      id_eleccion,
+    );
+  }
 
-    const totalVotosDelCircuito =
-      await this.votosService.obtenerVotodsPorCircuito(id_circuito);
-
-    // Aca tenes TODOS los votos del circuito. Faltaría agregar la lógica de que queres que devuelva este endpoint, si la suma por partidos o que
-    // Estoy viendo que la tabla Voto no tiene relación con Lista. Te lo dejo en bandeja pa q lo liquides
+  async obtenerResultadosPorCandidato(
+    id_circuito: number,
+    id_eleccion: number,
+  ) {
+    return this.circuitosRepository.obtenerResultadosPorCandidato(
+      id_circuito,
+      id_eleccion,
+    );
   }
 }
