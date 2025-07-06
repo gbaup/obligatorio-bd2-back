@@ -125,4 +125,11 @@ export class VotosController {
   ) {
     return this.votosService.resultadosPorCandidatoGlobal(id_eleccion);
   }
+
+  @Get('global/total-votos-emitidos')
+  async totalVotosEmitidosGlobal(
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.votosService.totalVotosEmitidosGlobal(id_eleccion);
+  }
 }

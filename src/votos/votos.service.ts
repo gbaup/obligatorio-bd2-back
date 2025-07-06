@@ -313,36 +313,47 @@ export class VotosService {
   async resultadosPorCandidatoGlobal(id_eleccion: number) {
     const [totalRows] = await this.db.query(
       `SELECT COUNT(*) as total
-       FROM Voto v
-       JOIN Papeleta p ON v.id_papeleta = p.id
-       WHERE p.id_eleccion = ? AND p.tipo = 'lista' AND v.estado = 'valido'`,
+     FROM Voto v
+     JOIN Papeleta p ON v.id_papeleta = p.id
+     WHERE p.id_eleccion = ? AND p.tipo = 'lista' AND v.estado = 'valido'`,
       [id_eleccion],
     );
     const total = totalRows[0]?.total || 1;
 
     const [rows] = await this.db.query(
       `SELECT
-         l.ci_candidato as ci,
-         ciu.nombres,
-         ciu.apellidos,
-         pa.nombre as nombre_partido,
-         l.numero as numero_lista,
-         COUNT(v.id) as votos,
-         ROUND(COUNT(v.id) / ? * 100, 2) as porcentaje
-       FROM Voto v
-       JOIN Papeleta p ON v.id_papeleta = p.id
-       JOIN Lista l ON l.id_papeleta = p.id
-       JOIN Candidato c ON l.ci_candidato = c.ci_ciudadano
-       JOIN Ciudadano ciu ON ciu.ci = c.ci_ciudadano
-       JOIN Partido pa ON l.id_partido = pa.id
-       WHERE p.id_eleccion = ? AND p.tipo = 'lista' AND v.estado = 'valido'
-       GROUP BY l.ci_candidato, ciu.nombres, ciu.apellidos, pa.nombre, l.numero
-       ORDER BY votos DESC`,
+       l.ci_candidato as ci,
+       ciu.nombres,
+       ciu.apellidos,
+       pa.nombre as nombre_partido,
+       l.numero as numero_lista,
+       COUNT(DISTINCT v.id) as votos,
+       ROUND(COUNT(DISTINCT v.id) / ? * 100, 2) as porcentaje
+     FROM Voto v
+     JOIN Papeleta p ON v.id_papeleta = p.id
+     JOIN Lista l ON l.id_papeleta = p.id
+     JOIN Candidato c ON l.ci_candidato = c.ci_ciudadano
+     JOIN Ciudadano ciu ON ciu.ci = c.ci_ciudadano
+     JOIN Partido pa ON l.id_partido = pa.id
+     WHERE p.id_eleccion = ? AND p.tipo = 'lista' AND v.estado = 'valido'
+     GROUP BY l.ci_candidato, ciu.nombres, ciu.apellidos, pa.nombre, l.numero
+     ORDER BY votos DESC`,
       [total, id_eleccion],
     );
     return {
       total_votos_validos: total,
       resultados: rows,
     };
+  }
+
+  async totalVotosEmitidosGlobal(id_eleccion: number) {
+    const [rows] = await this.db.query(
+      `SELECT COUNT(*) as total
+     FROM Voto v
+     JOIN Papeleta p ON v.id_papeleta = p.id
+     WHERE p.id IS NOT NULL AND p.id_eleccion = ?`,
+      [id_eleccion],
+    );
+    return { total: rows[0]?.total || 0 };
   }
 }
