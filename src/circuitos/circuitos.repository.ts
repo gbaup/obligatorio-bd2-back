@@ -28,8 +28,10 @@ export class CircuitosRepository extends CustomRepository<Circuito> {
     const [totalRows] = await this.db.query(
       `SELECT COUNT(*) as total
      FROM Voto v
-     JOIN Papeleta p ON v.id_papeleta = p.id
-     WHERE v.id_circuito = ? AND p.id_eleccion = ?`,
+     WHERE v.id_circuito = ? AND (
+       v.id_papeleta IS NULL
+       OR v.id_papeleta IN (SELECT id FROM Papeleta WHERE id_eleccion = ?)
+     )`,
       [id_circuito, id_eleccion],
     );
     const total = totalRows[0]?.total || 0;
@@ -110,11 +112,13 @@ export class CircuitosRepository extends CustomRepository<Circuito> {
     );
 
     const [tipos] = await this.db.query(
-      `SELECT estado, COUNT(*) as cantidad
-       FROM Voto v
-       JOIN Papeleta p ON v.id_papeleta = p.id
-       WHERE v.id_circuito = ? AND p.id_eleccion = ?
-       GROUP BY estado`,
+      `SELECT v.estado, COUNT(*) as cantidad
+     FROM Voto v
+     WHERE v.id_circuito = ? AND (
+       v.id_papeleta IS NULL
+       OR v.id_papeleta IN (SELECT id FROM Papeleta WHERE id_eleccion = ?)
+     )
+     GROUP BY v.estado`,
       [id_circuito, id_eleccion],
     );
 

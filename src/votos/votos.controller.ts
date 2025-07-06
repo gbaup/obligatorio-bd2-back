@@ -76,4 +76,53 @@ export class VotosController {
       id_eleccion,
     );
   }
+
+  @Get('global/distribucion-listas')
+  async distribucionListasGlobal(
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.votosService.distribucionListasGlobal(id_eleccion);
+  }
+
+  @Get('global/distribucion-plebiscito')
+  async distribucionPlebiscitoGlobal(
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.votosService.distribucionPlebiscitoGlobal(id_eleccion);
+  }
+
+  @Get('global/distribucion-formula')
+  async distribucionFormulaGlobal(
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.votosService.distribucionFormulaGlobal(id_eleccion);
+  }
+
+  @Get('global/desglose-tipo-voto')
+  async desgloseTipoVotoGlobal(
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.votosService.desgloseTipoVotoGlobal(id_eleccion);
+  }
+
+  @Get('global/participacion-formularios')
+  async participacionFormulariosGlobal(
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.votosService.participacionFormulariosGlobal(id_eleccion);
+  }
+
+  @Get('global/resultados-partido')
+  async resultadosPorPartidoGlobal(
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.votosService.resultadosPorPartidoGlobal(id_eleccion);
+  }
+
+  @Get('global/resultados-candidato')
+  async resultadosPorCandidatoGlobal(
+    @Query('id_eleccion', ParseIntPipe) id_eleccion: number,
+  ) {
+    return this.votosService.resultadosPorCandidatoGlobal(id_eleccion);
+  }
 }
