@@ -38,6 +38,9 @@ USE_LOCAL_DB=false  # Usa una base de datos remota (no levanta contenedor `db`)
 
 También podés configurar los datos de conexión a la base de datos en ese mismo archivo.
 
+Entonces para el caso de la conexión remota a la base de datos con las credenciales bridadas (mysql.reto-ucu.net), es necesario setear las credenciales necesarias indicadas en el archivo `.env.example`
+
+
 ### 3. Levantar el entorno con Docker
 
 Usá el script de arranque para levantar el entorno según el valor de USE_LOCAL_DB:
