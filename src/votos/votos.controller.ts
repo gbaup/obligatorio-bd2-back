@@ -59,13 +59,6 @@ export class VotosController {
     return this.votosService.distribucionVotosAccesibilidad();
   }
 
-  @Get('por-partido')
-  async obtenerVotosPorPartido(
-    @Query('partido', ParseIntPipe) id_partido: number,
-  ) {
-    return this.votosService.obtenerVotosPorPartido(id_partido);
-  }
-
   @Get('resultados-departamento')
   async resultadosPorDepartamento(
     @Query('departamento') departamento: string,
