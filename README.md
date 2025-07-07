@@ -5,9 +5,9 @@ de elecciones. Incluye gestión de ciudadanos, circuitos, miembros de mesa, cand
 
 ## 🚀 Tecnologías principales
 
-- **NestJS** - Framework Node.js
-- **MySQL** - Base de datos relacional
-- **Docker** y **Docker Compose** - Orquestación de servicios
+- **NestJS** – Framework Node.js
+- **MySQL** – Base de datos relacional
+- **Docker & Docker Compose** – Orquestación de servicios
 
 ---
 
@@ -15,27 +15,53 @@ de elecciones. Incluye gestión de ciudadanos, circuitos, miembros de mesa, cand
 
 ### 1. Clonar el repositorio
 
-```bash
+```
 git clone https://github.com/tu-usuario/tu-repo.git
+
 cd tu-repo
 ```
 
 ### 2. Configurar variables de entorno
 
-Crear un archivo .env en la raíz del proyecto con las variables que se encuentran en el archivo `.env.example`:
+Crear un archivo .env en la raíz del proyecto basándote en .env.example:
+
+```
+cp .env.example .env
+```
+
+Asegurate de setear la variable USE_LOCAL_DB según el entorno deseado:
+
+```
+USE_LOCAL_DB=true     # Usa base de datos local levantada por Docker
+USE_LOCAL_DB=false  # Usa una base de datos remota (no levanta contenedor `db`)
+```
+
+También podés configurar los datos de conexión a la base de datos en ese mismo archivo.
+
+Entonces para el caso de la conexión remota a la base de datos con las credenciales bridadas (mysql.reto-ucu.net), es necesario setear las credenciales necesarias indicadas en el archivo `.env.example`
+
 
 ### 3. Levantar el entorno con Docker
 
-```bash
-   docker-compose up -d
+Usá el script de arranque para levantar el entorno según el valor de USE_LOCAL_DB:
+
+```
+./start.sh
 ```
 
-Esto ejecutará:
+Esto hará lo siguiente:
 
-- La base de datos MySQL
+Si USE_LOCAL_DB=true:
+🔹 Levanta contenedor MySQL con datos iniciales + backend NestJS
 
-- El seeder básico con datos iniciales
-
-- La aplicación NestJS ya conectada a la base de datos
+Si USE_LOCAL_DB=false:
+🔹 Solo levanta el backend NestJS (asumiendo conexión a una base remota)
 
 ✅ Al iniciar, la aplicación corre en: http://localhost:3000
+
+## 🧪 Endpoints y documentación
+
+Podés acceder a la documentación Swagger en:
+
+📄 http://localhost:3000/api
+

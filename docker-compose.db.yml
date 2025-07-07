@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-admin}
+      MYSQL_DATABASE: ${DB_NAME:-db2-db}
+      MYSQL_USER: ${DB_USER:-admin}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-admin}
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    volumes:
+      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
